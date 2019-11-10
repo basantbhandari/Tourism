@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFF"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:text="User Register"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textSize="36sp"
+        android:textColor="#000"
+        android:padding="10dp"/>
+
+
+
+
+        <EditText
+            android:id="@+id/register_email"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/colorPrimary"
+            />
+
+
+        <EditText
+            android:id="@+id/register_password"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:focusableInTouchMode="true"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/colorPrimary" />
+
+
+
+
+
+    <Button
+        android:id="@+id/register_sign_up_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorPrimary"
+        android:text="Sign Up"
+        android:textColor="#FFF"
+        android:textStyle="bold" />
+
+
+    <!-- Link to Login Screen -->
+
+
+    <Button
+        android:id="@+id/register_sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorPrimary"
+        android:text="Sign In"
+        android:textStyle="bold"
+        android:textColor="#FFF" />
+
+
+    <Button
+        android:id="@+id/register_forget_password"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorPrimary"
+        android:text="Forget password"
+        android:textStyle="bold"
+        android:textColor="#FFF" />
+
+
+
+</LinearLayout>
