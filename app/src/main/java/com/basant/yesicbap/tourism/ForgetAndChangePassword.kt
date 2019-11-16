@@ -1,5 +1,6 @@
 package com.basant.yesicbap.tourism
 
+import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 import android.content.Intent
@@ -13,6 +14,7 @@ import android.widget.Toast
 
 
 import com.google.firebase.auth.FirebaseAuth
+import dmax.dialog.SpotsDialog
 
 class ForgetAndChangePassword : AppCompatActivity() {
 
@@ -25,10 +27,19 @@ class ForgetAndChangePassword : AppCompatActivity() {
     private var auth: FirebaseAuth? = null
 
     private var mode: Int = 0
-
+    // for progress bar
+    lateinit var alertDialog : AlertDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forget_and_change_password)
+
+        alertDialog = SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Loading...")
+                .setCancelable(false)
+                .build()
+
+
 
 
         //getting firebase instance
@@ -75,14 +86,19 @@ class ForgetAndChangePassword : AppCompatActivity() {
             if (TextUtils.isEmpty(modeStr)) {
                 mEmail!!.error = "Value Required"
             } else {
+
+                alertDialog.show()
                 auth!!.sendPasswordResetEmail(modeStr).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        alertDialog.dismiss()
                         Toast.makeText(this@ForgetAndChangePassword, "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show()
                         val intentGo = Intent(this@ForgetAndChangePassword, MainActivity::class.java)
                         startActivity(intentGo)
+                        finish()
 
 
                     } else {
+                        alertDialog.dismiss()
                         Toast.makeText(this@ForgetAndChangePassword, "Failed to send reset email! Please try again", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -91,14 +107,19 @@ class ForgetAndChangePassword : AppCompatActivity() {
             if (TextUtils.isEmpty(modeStr)) {
                 mEmail!!.error = "Value Required"
             } else {
+
+                alertDialog.show()
                 user!!.updatePassword(modeStr)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
+                                alertDialog.dismiss()
                                 Toast.makeText(this@ForgetAndChangePassword, "Password is updated!", Toast.LENGTH_SHORT).show()
                                 val intentGoo = Intent(this@ForgetAndChangePassword, MainActivity::class.java)
                                 startActivity(intentGoo)
+                                finish()
 
                             } else {
+                                alertDialog.dismiss()
                                 Toast.makeText(this@ForgetAndChangePassword, "Failed to update password. ! Please try again.", Toast.LENGTH_SHORT).show()
                             }
                         }
@@ -107,27 +128,35 @@ class ForgetAndChangePassword : AppCompatActivity() {
             if (TextUtils.isEmpty(modeStr)) {
                 mEmail!!.error = "Value Required"
             } else {
+                alertDialog.show()
                 user!!.updateEmail(modeStr)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
+                                alertDialog.dismiss()
                                 Toast.makeText(this@ForgetAndChangePassword, "Email address is updated.", Toast.LENGTH_LONG).show()
                                 val intentGooo = Intent(this@ForgetAndChangePassword, MainActivity::class.java)
                                 startActivity(intentGooo)
+                                finish()
 
                             } else {
+                                alertDialog.dismiss()
                                 Toast.makeText(this@ForgetAndChangePassword, "Failed to update email! Please try again.", Toast.LENGTH_LONG).show()
                             }
                         }
             }
         } else {
 
+            alertDialog.show()
             user?.delete()?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    alertDialog.dismiss()
                     Toast.makeText(this@ForgetAndChangePassword, "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show()
                     val intentGoooo = Intent(this@ForgetAndChangePassword, RegisterActivity::class.java)
                     startActivity(intentGoooo)
+                    finish()
 
                 } else {
+                    alertDialog.dismiss()
                     Toast.makeText(this@ForgetAndChangePassword, "Failed to delete your account! Please try again.", Toast.LENGTH_SHORT).show()
                 }
             }

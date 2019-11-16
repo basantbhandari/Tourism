@@ -12,13 +12,14 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 
 import com.google.firebase.storage.FirebaseStorage
 import dmax.dialog.SpotsDialog
 import java.io.File
 import java.util.*
-import com.google.firebase.firestore.FirebaseFirestore
 
 
 
@@ -48,8 +49,6 @@ class GuideActivity : AppCompatActivity() {
 
     // for progress bar
     lateinit var alertDialog : AlertDialog
-    private var downloadLink: String? = null
-    lateinit var  db : FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guide)
@@ -63,7 +62,6 @@ class GuideActivity : AppCompatActivity() {
         mDescription = findViewById(R.id.guide_guide_describtion)
         mSubmit = findViewById(R.id.guide_submit_button)
 
-          // db = FirebaseFirestore.getInstance()
 
         alertDialog = SpotsDialog.Builder()
                 .setContext(this)
@@ -108,7 +106,6 @@ class GuideActivity : AppCompatActivity() {
 
 
             Toast.makeText(this@GuideActivity, "Field are Empty.", Toast.LENGTH_LONG).show()
-            Log.d(TAG, "sendGuideInformationToDatabase: ")
             Log.d(TAG, "sendGuideInformationToDatabase: filed are empty")
 
 
@@ -128,9 +125,7 @@ class GuideActivity : AppCompatActivity() {
 
          val fileName = UUID.randomUUID().toString()
          val ref = FirebaseStorage.getInstance().getReference("/Images/$fileName")
-
-         Log.d(TAG, "Successfully inserted image")
-
+         Log.d(TAG, "Image is uploading...")
          ref.putFile(GuideImageURI!!)
                  .addOnSuccessListener {
                      alertDialog.dismiss()
@@ -139,32 +134,14 @@ class GuideActivity : AppCompatActivity() {
                      //for download uri
                      ref.downloadUrl
                              .addOnSuccessListener {
-                                  downloadLink =  it.toString()
+                                 Log.d(TAG, "GuideActivity :DownloadUrl :$it ")
                              }
 
+                     //method to save data to firebase database
 
-                     /*
+                     saveUserDataToFirebaseDatabase(it.toString())
 
-                     val guideInfo = hashMapOf(
-                             "firstName" to firstName,
-                             "lastName" to lastName,
-                             "imageUri" to downloadLink,
-                             "phoneNumber" to phoneNumber,
-                             "age" to age,
-                             "description" to description,
-                             "status" to status
-                     )
 
-                     db.collection("Guide").document("Information")
-                             .set(guideInfo)
-                             .addOnSuccessListener {
-                                 Log.d(TAG, "DocumentSnapshot successfully written!")
-                             }
-                             .addOnFailureListener { e ->
-                                 Log.w(TAG, "Error writing document", e)
-                             }
-
-                           */
 
                      var intent = Intent(this, AllGuideActivity::class.java)
                      startActivity(intent)
@@ -177,13 +154,27 @@ class GuideActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
         }// end else
+
+
+    }  // end main class
+
+
+
+    private fun saveUserDataToFirebaseDatabase(imageUrl: String ) {
+
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/GuideInformation/$uid")
+
+        val gInfo  = uid?.let { firstName?.let { it1 -> lastName?.let { it2 -> phoneNumber?.let { it3 -> age?.let { it4 -> description?.let { it5 -> status?.let { it6 -> GuideInfo(it, it1, it2, imageUrl, it3, it4, it5, it6) } } } } } } }
+
+        ref.setValue(gInfo)
+                .addOnSuccessListener {
+                    Log.d(TAG, " Guide Data are also inserted into firebase database")
+                }
+                .addOnFailureListener{
+                    Log.d(TAG, "Failed to upload the data")
+                }
 
 
     }
@@ -238,3 +229,5 @@ class GuideActivity : AppCompatActivity() {
     }
 }
 
+//class for uploading data to the firebase database
+class GuideInfo(val uid: String, val firstName : String , val lastName : String, val imageUrl: String , val phoneNumber : String, val age :Int, val description: String, val Status : Boolean  )

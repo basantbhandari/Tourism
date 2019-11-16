@@ -29,6 +29,20 @@
         app:srcCompat="@drawable/guide_profile_pic" />
 
     <EditText
+        android:id="@+id/blog_post_title"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#FFF"
+        android:layout_margin="30dp"
+        android:textColor="#000"
+        android:gravity="center"
+        android:hint="Enter title here"
+        android:padding="10dp"
+        android:textStyle="bold"
+
+    />
+
+    <EditText
         android:id="@+id/blog_post_description"
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -36,6 +50,7 @@
         android:hint="Describe more about that..."
         android:inputType="textMultiLine"
         android:maxLength="1000"
+        android:gravity="center"
         android:textColor="#000"
         android:background="#FFF"
         android:textStyle="bold"

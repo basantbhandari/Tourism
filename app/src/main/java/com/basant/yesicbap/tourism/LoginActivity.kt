@@ -1,5 +1,6 @@
 package com.basant.yesicbap.tourism
 
+import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 import android.content.Intent
@@ -12,6 +13,7 @@ import android.widget.EditText
 import android.widget.Toast
 
 import com.google.firebase.auth.FirebaseAuth
+import dmax.dialog.SpotsDialog
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,7 +22,8 @@ class LoginActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private var btnSignUp: Button? = null
     private var btnLogin: Button? = null
-
+    // for progress bar
+    lateinit var alertDialog : AlertDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -29,6 +32,13 @@ class LoginActivity : AppCompatActivity() {
 
         // getting firebase instance
         mAuth = FirebaseAuth.getInstance()
+
+
+        alertDialog = SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Loading...")
+                .setCancelable(false)
+                .build()
 
 
         //for getting all edit text information
@@ -45,15 +55,20 @@ class LoginActivity : AppCompatActivity() {
             try {
 
                 if (password.length > 0 && email.length > 0) {
+
+                    alertDialog.show()
+
                     mAuth!!.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this@LoginActivity) { task ->
                                 if (!task.isSuccessful) {
+                                    alertDialog.dismiss()
                                     Toast.makeText(
                                             this@LoginActivity,
                                             "Authentication Failed",
                                             Toast.LENGTH_LONG).show()
                                     Log.v("error", task.result!!.toString())
                                 } else {
+                                    alertDialog.dismiss()
                                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                     startActivity(intent)
                                     finish()

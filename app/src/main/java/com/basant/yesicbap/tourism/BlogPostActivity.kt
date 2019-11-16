@@ -15,21 +15,16 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import com.github.dhaval2404.imagepicker.ImagePicker
-
-
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.FirebaseDatabase
+
+
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
-import com.google.firebase.storage.StorageReference
 import dmax.dialog.SpotsDialog
 
 import java.io.File
 import java.util.*
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
 
 
 
@@ -41,16 +36,15 @@ class BlogPostActivity : AppCompatActivity() {
 
     private var mImageView: ImageView? = null
     private var mEditText: EditText? = null
+    private var mEditTextTitle: EditText? = null
+
     private var mButton: Button? = null
     //var
     private var blogImageUri: Uri? = null
-    private var Link: String = ""
-    //firebase refrence
-    lateinit var db : FirebaseFirestore
-    private var mFirebaseAuth: FirebaseAuth? = null
 
-    private var current_user_id: String? = null
     private var description: String? = null
+    private var titleBlog: String? = null
+
     lateinit var alertDialog : AlertDialog
 
 
@@ -62,16 +56,16 @@ class BlogPostActivity : AppCompatActivity() {
 
         mImageView = findViewById(R.id.blog_post_image)
         mEditText = findViewById(R.id.blog_post_description)
+        mEditTextTitle = findViewById(R.id.blog_post_title)
         mButton = findViewById(R.id.blog_post_submit)
 
-     //    db = FirebaseFirestore.getInstance()        //initializing database
+
         alertDialog = SpotsDialog.Builder()
                 .setContext(this)
                 .setMessage("Loading...")
                 .setCancelable(false)
                 .build()
 
-       // current_user_id = Objects.requireNonNull<FirebaseUser>(mFirebaseAuth!!.currentUser).getUid()
 
 
 
@@ -90,48 +84,25 @@ class BlogPostActivity : AppCompatActivity() {
 
         mButton!!.setOnClickListener {
             Log.d("name", "onClick: submit button is clicked")
+            titleBlog = mEditTextTitle!!.text.toString()
             description = mEditText!!.text.toString()
-            if (!TextUtils.isEmpty(description) && blogImageUri != null) {
+            if (!TextUtils.isEmpty(description) && blogImageUri != null && !TextUtils.isEmpty(titleBlog)) {
 
-                Log.d("name", "onClick: submit button is clicked again")
-
-
+                Log.d("name", "onClick:fields are properly field")
                 alertDialog.show()
-
-
                 val fileName = UUID.randomUUID().toString()
                 val ref = FirebaseStorage.getInstance().getReference("/PostImage/$fileName")
-
                 ref.putFile(blogImageUri!!)
                         .addOnSuccessListener {
                             alertDialog.dismiss()
                             Log.d(TAG, "Successfully inserted image.${it.metadata?.path}")
-
                            //for download uri
                             ref.downloadUrl
                                     .addOnSuccessListener {
-                                       Link =  it.toString()
-
-                                        Log.d(TAG, "DownloadUrl = " + Link.toString())
+                                       //Link =  it.toString()
+                                        Log.d(TAG, "DownloadUrl =  $it")
                                     }
-/*
-
-                            val post = hashMapOf(
-                                    "description" to description,
-                                    "imageUri" to Link
-                            )
-
-                            db.collection("AllPost").document("post")
-                                    .set(post as Map<String, Any>)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "DocumentSnapshot successfully written!")
-                                    }
-                                    .addOnFailureListener {
-                                        Log.d(TAG, "Error writing document")
-                              }
-                            */
-
-
+                            saveAllDataToFirebaseDatabase(it.toString())
 
                             var intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
@@ -148,18 +119,6 @@ class BlogPostActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
             } else {
 
 
@@ -171,6 +130,25 @@ class BlogPostActivity : AppCompatActivity() {
 
     }// end create
 
+    private fun saveAllDataToFirebaseDatabase(profileImageUrl : String) {
+
+
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/UserPostInformation/$uid")
+
+        val userpost  = uid?.let { titleBlog?.let { it1 -> description?.let { it2 -> UserPost(it, it1, it2, profileImageUrl ) } } }
+
+        ref.setValue(userpost)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Data are also inserted into firebase database")
+                }
+                .addOnFailureListener{
+                    Log.d(TAG, "Failed to upload the data")
+                }
+
+
+
+    }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -194,3 +172,8 @@ class BlogPostActivity : AppCompatActivity() {
 
 
 }
+
+
+
+//class for uploading data to the firebase database
+class UserPost(val uid: String, val titleBlog : String , val description : String, val postImageUrl : String )

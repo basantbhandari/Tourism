@@ -1,5 +1,6 @@
 package com.basant.yesicbap.tourism
 
+import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 
 import com.google.firebase.auth.FirebaseAuth
+import dmax.dialog.SpotsDialog
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -20,10 +22,20 @@ class RegisterActivity : AppCompatActivity() {
     private var mLogin: Button? = null
     private var mForgetPassword: Button? = null
 
+
+    // for progress bar
+    lateinit var alertDialog : AlertDialog
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        alertDialog = SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Loading...")
+                .setCancelable(false)
+                .build()
 
 
 
@@ -51,16 +63,18 @@ class RegisterActivity : AppCompatActivity() {
 
             try {
                 if (password.length > 0 && email.length > 0) {
-
+                    alertDialog.show()
                     mAuth!!.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this@RegisterActivity) { task ->
                                 if (!task.isSuccessful) {
+                                    alertDialog.dismiss()
                                     Toast.makeText(
                                             this@RegisterActivity,
                                             "Authentication Failed",
                                             Toast.LENGTH_LONG).show()
                                     Log.v("error", task.result!!.toString())
                                 } else {
+                                    alertDialog.dismiss()
                                     val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                                     startActivity(intent)
                                     finish()
