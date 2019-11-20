@@ -54,11 +54,12 @@
 
         <ImageView
             android:id="@+id/guide_image"
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="300dp"
             android:layout_gravity="center"
             android:layout_margin="20dp"
             android:src="@drawable/guide_profile_pic"
+            android:scaleType="fitXY"
 
             />
 

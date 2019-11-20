@@ -89,6 +89,25 @@ class AllGuideActivity : AppCompatActivity() {
                         myAdapterForGuige.add(UserGuideItem(userGuide))
 
                     }
+                    //if the item of recycler view is clicked
+                    myAdapterForGuige.setOnItemClickListener{ item, view ->
+                        val userP = item as UserGuideItem
+                        Log.d("yo", "status = "+ userP.guide.Status)
+
+                        val intent = Intent(view.context, AllGuideItemClickActivity::class.java)
+                        intent.putExtra("name", userP.guide.firstName+" "+userP.guide.lastName)
+                        intent.putExtra("image", userP.guide.imageUrl)
+                        intent.putExtra("phone", userP.guide.phoneNumber)
+                        intent.putExtra("age", userP.guide.age)
+                        intent.putExtra("gender", userP.guide.Status)
+                        intent.putExtra("description", userP.guide.description)
+
+                        startActivity(intent)
+
+                    }
+
+
+
 
                 }
 

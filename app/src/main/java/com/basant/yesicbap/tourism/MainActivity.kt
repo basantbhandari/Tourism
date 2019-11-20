@@ -153,6 +153,19 @@ class MainActivity : AppCompatActivity() {
                         adapter.add(UserPostItem(userPostinformation))
                     }
 
+                    //if the item of recycler view is clicked
+                    adapter.setOnItemClickListener{ item, view ->
+                        val userMe = item as UserPostItem
+                        val intent = Intent(view.context, MainItemClickActivity::class.java)
+                        intent.putExtra("title", userMe.user.titleBlog)
+                        intent.putExtra("image", userMe.user.postImageUrl)
+                        intent.putExtra("description", userMe.user.description)
+                        startActivity(intent)
+                    }
+
+
+
+
 
                 }
 

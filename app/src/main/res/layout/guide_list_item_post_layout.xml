@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="250dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/guide_list_item_post_layout_card_view"
     android:background="#00BCD4"
@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/guide_list_item_post_layout_image_view"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:scaleType="fitXY"
             />
         <TextView
