@@ -8,6 +8,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -134,13 +135,11 @@ class GuideActivity : AppCompatActivity() {
                      //for download uri
                      ref.downloadUrl
                              .addOnSuccessListener {
-                                 Log.d(TAG, "GuideActivity :DownloadUrl :$it ")
+                                 Log.d(TAG, "GuideActivity :DownloadUrl :$it")
+
+                                 //method to save data to firebase database
+                                 saveUserDataToFirebaseDatabase(it.toString())
                              }
-
-                     //method to save data to firebase database
-
-                     saveUserDataToFirebaseDatabase(it.toString())
-
 
 
                      var intent = Intent(this, AllGuideActivity::class.java)
@@ -151,13 +150,10 @@ class GuideActivity : AppCompatActivity() {
                      Toast.makeText(this, "Image is not inserted", Toast.LENGTH_LONG).show()
                  }
 
-
-
-
         }// end else
 
 
-    }  // end main class
+    }  // end function
 
 
 
@@ -166,8 +162,9 @@ class GuideActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/GuideInformation/$uid")
 
-        val gInfo  = uid?.let { firstName?.let { it1 -> lastName?.let { it2 -> phoneNumber?.let { it3 -> age?.let { it4 -> description?.let { it5 -> status?.let { it6 -> GuideInfo(it, it1, it2, imageUrl, it3, it4, it5, it6) } } } } } } }
+        val gInfo  = GuideInfo(uid, firstName, lastName, imageUrl, phoneNumber, age, description, status)
 
+        Log.d("me", "imageUrl = $imageUrl")
         ref.setValue(gInfo)
                 .addOnSuccessListener {
                     Log.d(TAG, " Guide Data are also inserted into firebase database")
@@ -175,8 +172,6 @@ class GuideActivity : AppCompatActivity() {
                 .addOnFailureListener{
                     Log.d(TAG, "Failed to upload the data")
                 }
-
-
     }
 
 
@@ -209,8 +204,9 @@ class GuideActivity : AppCompatActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
             //Image Uri will not be null for RESULT_OK
-             GuideImageURI = data?.data
-            mImageView?.setImageURI(GuideImageURI)
+            GuideImageURI = data?.data
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, GuideImageURI)
+            mImageView?.setImageBitmap(bitmap)
             Log.d(TAG, "File selected : " + GuideImageURI.toString())
             //You can get File object from intent
             val file: File? = ImagePicker.getFile(data)
@@ -230,4 +226,7 @@ class GuideActivity : AppCompatActivity() {
 }
 
 //class for uploading data to the firebase database
-class GuideInfo(val uid: String, val firstName : String , val lastName : String, val imageUrl: String , val phoneNumber : String, val age :Int, val description: String, val Status : Boolean  )
+class GuideInfo(val uid: String?, val firstName: String?, val lastName: String?, val imageUrl: String, val phoneNumber: String?, val age: Int?, val description: String?, val Status: Boolean?){
+    constructor():this("","", "", "", "", 1, "", true)
+
+}

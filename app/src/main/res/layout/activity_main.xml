@@ -4,21 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EBE7E7"
     tools:context=".MainActivity">
 
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
+        android:layout_height="70dp"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
         android:elevation="4dp"
         app:title="Bhaktapur"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/pencils_another_bg"
         app:titleTextColor="#FFFFFF"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginTop="70dp"/>
+
+
 
 
 
@@ -33,5 +44,7 @@
         android:layout_margin="16dp"
 
         />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

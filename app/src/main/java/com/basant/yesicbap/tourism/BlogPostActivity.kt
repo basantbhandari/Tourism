@@ -8,6 +8,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Button
@@ -60,7 +61,7 @@ class BlogPostActivity : AppCompatActivity() {
         mButton = findViewById(R.id.blog_post_submit)
 
 
-        alertDialog = SpotsDialog.Builder()
+             alertDialog = SpotsDialog.Builder()
                 .setContext(this)
                 .setMessage("Loading...")
                 .setCancelable(false)
@@ -97,12 +98,15 @@ class BlogPostActivity : AppCompatActivity() {
                             alertDialog.dismiss()
                             Log.d(TAG, "Successfully inserted image.${it.metadata?.path}")
                            //for download uri
+
+
                             ref.downloadUrl
                                     .addOnSuccessListener {
                                        //Link =  it.toString()
                                         Log.d(TAG, "DownloadUrl =  $it")
+                                        saveAllDataToFirebaseDatabase(it.toString())
                                     }
-                            saveAllDataToFirebaseDatabase(it.toString())
+
 
                             var intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
@@ -130,15 +134,17 @@ class BlogPostActivity : AppCompatActivity() {
 
     }// end create
 
-    private fun saveAllDataToFirebaseDatabase(profileImageUrl : String) {
+    private fun saveAllDataToFirebaseDatabase(profileImageUrl: String) {
 
 
-        val uid = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance().getReference("/UserPostInformation/$uid")
+        val uid = FirebaseAuth.getInstance().uid ?: ""
+        val fileName = UUID.randomUUID().toString()
+        val ref = FirebaseDatabase.getInstance().getReference("/UserPostInformation/$fileName")
 
-        val userpost  = uid?.let { titleBlog?.let { it1 -> description?.let { it2 -> UserPost(it, it1, it2, profileImageUrl ) } } }
+        Log.d("me", "porofileimageUrl = $profileImageUrl")
+        val userPost  = UserPost(uid, titleBlog, description ,profileImageUrl )
 
-        ref.setValue(userpost)
+        ref.setValue(userPost)
                 .addOnSuccessListener {
                     Log.d(TAG, "Data are also inserted into firebase database")
                 }
@@ -156,7 +162,8 @@ class BlogPostActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             //Image Uri will not be null for RESULT_OK
             blogImageUri = data?.data
-            mImageView?.setImageURI(blogImageUri)
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, blogImageUri)
+            mImageView?.setImageBitmap(bitmap)
 
             //You can get File object from intent
             val file: File? = ImagePicker.getFile(data)
@@ -176,4 +183,8 @@ class BlogPostActivity : AppCompatActivity() {
 
 
 //class for uploading data to the firebase database
-class UserPost(val uid: String, val titleBlog : String , val description : String, val postImageUrl : String )
+class UserPost(val uid: String, val titleBlog: String?, val description: String?, val postImageUrl: String){
+
+    constructor():this("", "", "", "")
+
+}
