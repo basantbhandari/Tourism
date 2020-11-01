@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-   <item android:title="Main menu">
-       <menu>
-
            <item android:id="@+id/guide"
                android:icon="@drawable/ic_guide_black_24dp"
                android:orderInCategory="100"
@@ -14,12 +11,6 @@
                android:icon="@drawable/ic_dashboard_black_24dp"
                android:orderInCategory="100"
                android:title="Dashboard"
-
-               />
-           <item android:id="@+id/log_Out"
-               android:icon="@drawable/ic_log_out_black_24dp"
-               android:orderInCategory="100"
-               android:title="Log Out"
 
                />
 
@@ -46,12 +37,17 @@
                android:orderInCategory="100"
                android:title="Share" />
 
+            <item android:id="@+id/log_Out"
+                android:icon="@drawable/ic_log_out_black_24dp"
+                android:orderInCategory="100"
+                android:title="Log Out"
+
+            />
+
            <item android:id="@+id/exit"
                android:icon="@drawable/ic_exit_to_app_black_24dp"
                android:orderInCategory="100"
                android:title="Exit" />
 
 
-       </menu>
-   </item>
 </menu>

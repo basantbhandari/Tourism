@@ -27,13 +27,13 @@ public class MainItemClickActivity extends AppCompatActivity {
         mTextViewDescription = findViewById(R.id.activity_main_item_click_description);
 
 
-        Log.d("yo", " TITLE = "+ getIntent().getStringExtra("title"));
-        Log.d("yo", " Photo = "+ getIntent().getStringExtra("image"));
-        Log.d("yo", " Description = "+ getIntent().getStringExtra("description"));
+//        Log.d("yo", " TITLE = "+ getIntent().getStringExtra("title"));
+//        Log.d("yo", " Photo = "+ getIntent().getStringExtra("image"));
+//        Log.d("yo", " Description = "+ getIntent().getStringExtra("description"));
 
-        mTextViewTitle.setText("TITLE: "+ getIntent().getStringExtra("title"));
+        mTextViewTitle.setText(getIntent().getStringExtra("title"));
         Picasso.get().load( getIntent().getStringExtra("image")).into(mImageViewPhoto);
-        mTextViewDescription.setText("DESCRIPTION: \n\n"+getIntent().getStringExtra("description"));
+        mTextViewDescription.setText(getIntent().getStringExtra("description"));
 
 
 

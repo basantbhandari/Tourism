@@ -311,7 +311,7 @@ class MainActivity : AppCompatActivity() {
 
     //start toolBarProperties
     private fun toolBarProperties() {
-        mToolbar!!.title = "Bhaktapur"
+        mToolbar!!.title = "Tourism"
         mToolbar!!.titleMarginStart = 400
         //for toolbar,setting things
         setSupportActionBar(mToolbar)
